@@ -6,7 +6,7 @@ const fastifySentry = require("./index");
 
 // This test suite recreates https://www.cockroachlabs.com/docs/stable/build-a-nodejs-app-with-cockroachdb-sequelize.html
 tap.test("fastify sentry error handler exist", test => {
-  test.plan(2);
+  test.plan(3);
 
   fastify.register(fastifySentry, {
     dsn: "https://00000000000000000000000000000000@sentry.io/0000000"
@@ -26,7 +26,10 @@ tap.test("fastify sentry error handler exist", test => {
         send: obj => {
           test.equal(obj.error, 500);
           test.equal(obj.message, "Internal Server Error");
-          fastify.close(() => test.end());
+          fastify.close(() => {
+            test.end();
+            process.exit(0);
+          });
         }
       }
     );
