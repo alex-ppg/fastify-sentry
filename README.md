@@ -33,7 +33,7 @@ fastify.get("/", async (request, reply) => {
 
 ## Description
 
-This plugin adds the Sentry SDK error handler by using `fastify.setErrorHandler`. This means that it **will only work on `async` functions**. It also adds certain metadata, namely the `path` and the `ip` parameters of `req.raw`, to both the `User` context and `Tag` context of Sentry.
+This plugin adds the Sentry SDK error handler by using `fastify.setErrorHandler`. This means that the Sentry SDK will only catch any errors thrown in routes with `async` functions. In order to properly log errors thrown within synchronous functions, you need to pass the error object within `reply.send`. It also adds certain metadata, namely the `path` and the `ip` parameters of `req.raw`, to both the `User` context and `Tag` context of Sentry.
 
 ## Options
 
