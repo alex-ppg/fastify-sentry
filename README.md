@@ -18,7 +18,21 @@ const fastify = require("fastify")();
 fastify.register(
   require("fastify-sentry"),
   {
-    dsn: "https://00000000000000000000000000000000@sentry.io/0000000"
+    dsn: "https://00000000000000000000000000000000@sentry.io/0000000",
+    errorHandler: (request, reply) => {
+      // You can specify a custom behavior depending on the context of "request", generate a unique identifier etc.
+      if (request.raw.url === "/") {
+        reply.send({
+          error: 500,
+          message: 'The main path "/" didn\'t work!'
+        });
+      } else {
+        reply.send({
+          error: 501,
+          message: "Some other path failed!"
+        });
+      }
+    }
   },
   err => {
     if (err) throw err;
@@ -26,8 +40,14 @@ fastify.register(
 );
 
 fastify.get("/", async (request, reply) => {
+  // Errors in async functions are automatically caught
   throw new Error("Oops");
   reply.send({ hello: "world" });
+});
+
+fastify.get("/other-path", (request, reply) => {
+  // On the other hand, you need to pass the Error object to "reply.send" for it to be logged as Fastify does not catch errors in synchronous functions!
+  reply.send(new Error("I did it again!"));
 });
 ```
 
