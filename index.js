@@ -15,10 +15,12 @@ async function sentryConnector(fastify, options) {
       scope.setTag("path", req.raw.url);
       // will be tagged with my-tag="my value"
       Sentry.captureException(err);
-      reply.send({
-        error: 500,
-        message: "Internal Server Error"
-      });
+      options.errorHandler
+        ? options.errorHandler(req, reply)
+        : reply.send({
+            error: 500,
+            message: "Internal Server Error"
+          });
     });
   });
 }

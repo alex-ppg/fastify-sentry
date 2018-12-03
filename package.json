@@ -1,7 +1,8 @@
 {
   "name": "fastify-sentry",
-  "version": "1.0.1",
-  "description": "A plugin for attaching the Sentry SDK error handling to Fastify",
+  "version": "1.1.0",
+  "description":
+    "A plugin for attaching the Sentry SDK error handling to Fastify",
   "main": "index.js",
   "scripts": {
     "test": "tap test.js"
@@ -13,13 +14,7 @@
     "type": "git",
     "url": "git+https://github.com/alex-ppg/fastify-sentry.git"
   },
-  "keywords": [
-    "fastify",
-    "api",
-    "sentry",
-    "error",
-    "handling"
-  ],
+  "keywords": ["fastify", "api", "sentry", "error", "handling"],
   "author": "Alex Papageorgiou",
   "license": "GPL-3.0-or-later",
   "bugs": {
