@@ -19,6 +19,7 @@ fastify.register(
   require("fastify-sentry"),
   {
     dsn: "https://00000000000000000000000000000000@sentry.io/0000000",
+    environment: "local",
     errorHandler: (request, reply) => {
       // You can specify a custom behavior depending on the context of "request", generate a unique identifier etc.
       if (request.raw.url === "/") {
