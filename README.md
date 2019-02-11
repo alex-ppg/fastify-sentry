@@ -20,17 +20,19 @@ fastify.register(
   {
     dsn: "https://00000000000000000000000000000000@sentry.io/0000000",
     environment: "local",
-    errorHandler: (request, reply) => {
+    errorHandler: (err, request, reply) => {
       // You can specify a custom behavior depending on the context of "request", generate a unique identifier etc.
       if (request.raw.url === "/") {
         reply.send({
           error: 500,
-          message: 'The main path "/" didn\'t work!'
+          message: 'The main path "/" didn\'t work!',
+          payload: err
         });
       } else {
         reply.send({
           error: 501,
-          message: "Some other path failed!"
+          message: "Some other path failed!",
+          payload: err
         });
       }
     }

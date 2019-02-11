@@ -17,7 +17,7 @@ async function sentryConnector(fastify, options) {
       // will be tagged with my-tag="my value"
       Sentry.captureException(err);
       options.errorHandler
-        ? options.errorHandler(req, reply)
+        ? options.errorHandler(err, req, reply)
         : reply.send({
             error: 500,
             message: "Internal Server Error"
