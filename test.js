@@ -17,6 +17,7 @@ tap.test("fastify sentry error handler exist", test => {
 
   fastify.register(fastifySentry, {
     dsn: "https://00000000000000000000000000000000@sentry.io/0000000",
+    environment: "test",
     errorHandler: errorHandler
   });
 
