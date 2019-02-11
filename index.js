@@ -6,7 +6,7 @@ const Sentry = require("@sentry/node");
 async function sentryConnector(fastify, options) {
   Sentry.init({
     dsn: options.dsn,
-    environment: options.environment
+    environment: options.environment ? "local" : options.environment
   });
   fastify.setErrorHandler((err, req, reply) => {
     Sentry.withScope(scope => {
