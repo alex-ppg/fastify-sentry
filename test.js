@@ -5,15 +5,15 @@ const tap = require("tap");
 const fastifySentry = require("./index");
 
 // Custom error handler declaration
-const errorHandler = (req, reply) => {
-  reply.send({
-    error: req.body.error,
-    message: req.body.message
+const errorHandler = (err, req, reply) => {
+  reply.status(req.body.error).send({
+    message: req.body.message,
+    e: err.message
   });
 };
 
 tap.test("fastify sentry error handler exist", test => {
-  test.plan(3);
+  test.plan(4);
 
   fastify.register(fastifySentry, {
     dsn: "https://00000000000000000000000000000000@sentry.io/0000000",
@@ -31,11 +31,13 @@ tap.test("fastify sentry error handler exist", test => {
       {
         method: "POST",
         url: "/",
-        payload: { error: 500, message: "Internal Server Error" }
+        payload: { error: 503, message: "Internal Server Error" }
       },
-      (err, res) => {
-        test.strictEqual(res.statusCode, 500);
-        test.strictEqual(res.statusMessage, "Internal Server Error");
+      (err, { statusCode, payload }) => {
+        payload = JSON.parse(payload);
+        test.strictEqual(statusCode, 503);
+        test.strictEqual(payload.message, "Internal Server Error");
+        test.strictEqual(payload.e, "Oops");
         fastify.close(() => {
           test.end();
           process.exit(0);
