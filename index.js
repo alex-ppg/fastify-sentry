@@ -3,7 +3,7 @@
 const fastifyPlugin = require("fastify-plugin");
 const Sentry = require("@sentry/node");
 
-async function sentryConnector(fastify, options) {
+function sentryConnector(fastify, options, done) {
   Sentry.init({
     dsn: options.dsn,
     environment: options.environment ? "local" : options.environment
@@ -24,6 +24,7 @@ async function sentryConnector(fastify, options) {
           });
     });
   });
+  done();
 }
 
 module.exports = fastifyPlugin(sentryConnector);
