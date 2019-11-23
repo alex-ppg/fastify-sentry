@@ -1,6 +1,6 @@
 {
   "name": "fastify-sentry",
-  "version": "1.2.1",
+  "version": "1.4.0",
   "description": "A plugin for attaching the Sentry SDK error handling to Fastify",
   "main": "index.js",
   "scripts": {
@@ -27,11 +27,11 @@
   },
   "homepage": "https://github.com/alex-ppg/fastify-sentry#readme",
   "dependencies": {
-    "@sentry/node": "^4.4.1",
+    "@sentry/node": "^5.9.0",
     "fastify-plugin": "^1.2.1"
   },
   "devDependencies": {
     "fastify": "^1.13.1",
-    "tap": "^12.5.2"
+    "tap": "^14.10.1"
   }
 }
