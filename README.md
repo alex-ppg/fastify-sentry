@@ -20,6 +20,7 @@ fastify.register(
   {
     dsn: "https://00000000000000000000000000000000@sentry.io/0000000",
     environment: "local",
+    release: process.env.VERSION || "local",
     errorHandler: (err, request, reply) => {
       // You can specify a custom behavior depending on the context of "request", generate a unique identifier etc.
       if (request.raw.url === "/") {
@@ -59,10 +60,11 @@ fastify.get("/other-path", (request, reply) => {
 This plugin adds the Sentry SDK error handler by using `fastify.setErrorHandler`. This means that the Sentry SDK will only catch any errors thrown in routes with `async` functions. In order to properly log errors thrown within synchronous functions, you need to pass the error object within `reply.send`. It also adds certain metadata, namely the `path` and the `ip` parameters of `req.raw`, to both the `User` context and `Tag` context of Sentry.
 
 ## Options
-
-| Option | Description                                                         |
-| ------ | ------------------------------------------------------------------- |
-| `dsn`  | Required, the DSN specified by Sentry.io to properly log errors to. |
+| Option        | Description                                                         | Sentry Documentation                                                                    |
+| ------------- | ------------------------------------------------------------------- | --------------------------------------------------------------------------------------- |
+| `dsn`         | Required, the DSN specified by Sentry.io to properly log errors to. |                                                                                         |
+| `environment` | Optional, defaults to 'local'                                       | [Environments](https://docs.sentry.io/enriching-error-data/environments/?platform=node) |
+| `release`     | Optional                                                            | [Releases](https://docs.sentry.io/workflow/releases/?platform=node)                     |
 
 ## Author
 
