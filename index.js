@@ -18,10 +18,7 @@ function sentryConnector(fastify, options, done) {
       Sentry.captureException(err);
       options.errorHandler
         ? options.errorHandler(err, req, reply)
-        : reply.send({
-            error: 500,
-            message: "Internal Server Error"
-          });
+        : reply.send(err);
     });
   });
   done();
