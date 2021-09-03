@@ -11,7 +11,7 @@ function sentryConnector(fastify, options, done) {
   fastify.setErrorHandler((err, req, reply) => {
     Sentry.withScope(scope => {
       scope.setUser({
-        ip_address: req.raw.ip
+        ip_address: req.ip
       });
       scope.setTag("path", req.raw.url);
       // will be tagged with my-tag="my value"
