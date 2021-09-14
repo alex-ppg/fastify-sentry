@@ -1,5 +1,6 @@
 {
   "name": "@zentered/fastify-sentry",
+  "private": false,
   "version": "2.0.0",
   "description": "A plugin for attaching the Sentry SDK error handling to Fastify",
   "keywords": [
