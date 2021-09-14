@@ -1,5 +1,9 @@
 # Fastify Sentry Plugin using the Sentry SDK
 
+[![Test](https://github.com/zentered/fastify-sentry/actions/workflows/test.yml/badge.svg)](https://github.com/zentered/fastify-sentry/actions/workflows/test.yml)
+[![Semantic Release](https://github.com/zentered/fastify-sentry/actions/workflows/publish.yml/badge.svg)](https://github.com/zentered/fastify-sentry/actions/workflows/publish.yml)
+[![Conventional Commits](https://img.shields.io/badge/Conventional%20Commits-1.0.0-yellow.svg)](https://conventionalcommits.org)
+
 ## Installation
 
 ```bash
