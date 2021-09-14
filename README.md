@@ -8,6 +8,7 @@
 
 ```bash
 npm i @zentered/fastify-sentry -s
+yarn add @zentered/fastify-sentry
 ```
 
 ## Usage
