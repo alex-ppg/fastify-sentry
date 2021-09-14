@@ -5,25 +5,63 @@ const Sentry = require('@sentry/node')
 const Tracing = require('@sentry/tracing') // eslint-disable-line no-unused-vars
 
 function sentryConnector(fastify, opts, next) {
+  if (!opts || !opts.dsn) {
+    return next(new Error('Sentry DSN is required.'))
+  }
+
+  if (opts.tracing === true) {
+    opts.integrations = [
+      new Sentry.Integrations.Http({ tracing: true }),
+      new Tracing.Integrations.Express({
+        fastify
+      })
+    ]
+  }
+
   Sentry.init(opts)
-  fastify.setErrorHandler((err, req, reply) => {
+
+  fastify.decorateRequest('sentryTransaction', null)
+  fastify.addHook('onRequest', async (request) => {
+    request.sentryTransaction = Sentry.startTransaction({
+      op: 'request',
+      name: `${request.method} ${request.url}`
+    })
+    return
+  })
+
+  fastify.addHook('onResponse', async (request, reply) => {
+    setImmediate(() => {
+      const transaction = request.sentryTransaction
+      transaction.setData('url', request.url)
+      transaction.setData('query', request.query)
+      transaction.setHttpStatus(reply.statusCode)
+      transaction.finish()
+    })
+    return
+  })
+
+  fastify.setErrorHandler((error, request, reply) => {
     Sentry.withScope((scope) => {
-      if (req && req.user && req.user.sub) {
+      if (request && request.user && request.user.sub) {
         scope.setUser({
-          id: req.user.sub,
-          ip_address: req.ip
+          id: request.user.sub,
+          ip_address: request.ip
         })
       } else {
         scope.setUser({
-          ip_address: req.ip
+          ip_address: request.ip
         })
       }
-      scope.setTag('path', req.url)
+      scope.setTag('path', request.url)
       // will be tagged with my-tag="my value"
-      Sentry.captureException(err)
-      opts.errorHandler ? opts.errorHandler(err, req, reply) : reply.send(err)
+      Sentry.captureException(error)
+      opts.errorHandler
+        ? opts.errorHandler(error, request, reply)
+        : reply.send(error)
     })
+    return
   })
+
   next()
 }
 
