@@ -8,6 +8,9 @@
 
 ```bash
 npm i @zentered/fastify-sentry -s
+
+or
+
 yarn add @zentered/fastify-sentry
 ```
 
@@ -32,7 +35,6 @@ fastify.register(fastifySentry, {
 fastify.get('/', async (request, reply) => {
   // Errors in async functions are automatically caught
   throw new Error('Oops')
-  reply.send({ hello: 'world' })
 })
 
 fastify.get('/other-path', (request, reply) => {
