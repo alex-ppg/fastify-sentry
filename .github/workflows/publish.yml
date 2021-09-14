@@ -22,7 +22,8 @@ jobs:
       - run: npm ci --ignore-scripts
       - run: npm run lint
       - run: npm test
-      # - name: Semantic Release
-      #   run: npx semantic-release
-      #   env:
-      #     GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      - name: Semantic Release
+        run: npx semantic-release
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          NPM_TOKEN: ${{ secrets.NPM_TOKEN }}
