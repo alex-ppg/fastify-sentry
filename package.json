@@ -15,7 +15,7 @@
   },
   "repository": {
     "type": "git",
-    "url": "git@github.com:zentered/fastify-sentry.git"
+    "url": "https://github.com/zentered/fastify-sentry.git"
   },
   "license": "GPL-3.0-or-later",
   "author": "Alex Papageorgiou",
