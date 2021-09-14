@@ -1,68 +1,52 @@
 # Fastify Sentry Plugin using the Sentry SDK
 
-[![NPM](https://nodei.co/npm/fastify-sentry.png?downloads=true&downloadRank=true&stars=true)](https://nodei.co/npm/fastify-sentry/)
-
-[![CircleCI](https://circleci.com/gh/alex-ppg/fastify-sentry.svg?style=svg)](https://circleci.com/gh/alex-ppg/fastify-sentry)
-
 ## Installation
 
 ```bash
-npm i fastify-sentry -s
+npm i @zentered/fastify-sentry -s
 ```
 
 ## Usage
 
-```javascript
-const fastify = require("fastify")();
-// Should be first declaration
-fastify.register(
-  require("fastify-sentry"),
-  {
-    dsn: "https://00000000000000000000000000000000@sentry.io/0000000",
-    environment: "local",
-    errorHandler: (err, request, reply) => {
-      // You can specify a custom behavior depending on the context of "request", generate a unique identifier etc.
-      if (request.raw.url === "/") {
-        reply.send({
-          error: 500,
-          message: 'The main path "/" didn\'t work!',
-          payload: err
-        });
-      } else {
-        reply.send({
-          error: 501,
-          message: "Some other path failed!",
-          payload: err
-        });
-      }
-    }
-  },
-  err => {
-    if (err) throw err;
-  }
-);
+```js
+const fastifySentry = require('@zentered/fastify-sentry')
 
-fastify.get("/", async (request, reply) => {
+const errorHandler = (err, req, reply) => {
+  reply.status(req.body.error).send({
+    message: req.body.message,
+    e: err.message
+  })
+}
+
+fastify.register(fastifySentry, {
+  dsn: 'https://00000000000000000000000000000000@sentry.io/0000000',
+  environment: 'test',
+  errorHandler: errorHandler
+})
+
+fastify.get('/', async (request, reply) => {
   // Errors in async functions are automatically caught
-  throw new Error("Oops");
-  reply.send({ hello: "world" });
-});
+  throw new Error('Oops')
+  reply.send({ hello: 'world' })
+})
 
-fastify.get("/other-path", (request, reply) => {
+fastify.get('/other-path', (request, reply) => {
   // On the other hand, you need to pass the Error object to "reply.send" for it to be logged as Fastify does not catch errors in synchronous functions!
-  reply.send(new Error("I did it again!"));
-});
+  reply.send(new Error('I did it again!'))
+})
 ```
 
 ## Description
 
-This plugin adds the Sentry SDK error handler by using `fastify.setErrorHandler`. This means that the Sentry SDK will only catch any errors thrown in routes with `async` functions. In order to properly log errors thrown within synchronous functions, you need to pass the error object within `reply.send`. It also adds certain metadata, namely the `path` and the `ip` parameters of `req.raw`, to both the `User` context and `Tag` context of Sentry.
+This plugin adds the Sentry SDK error handler by using `fastify.setErrorHandler`. This means that the Sentry SDK will only catch any errors thrown in routes with `async` functions. In order to properly log errors thrown within synchronous functions, you need to pass the error object within `reply.send`. It also adds certain metadata, namely the `path` and the `ip` parameters of `req.raw`, to both the `User` context and `Tag` context of Sentry. If you use jwt authentication, the user id is also added to Sentry.
 
 ## Options
 
 | Option | Description                                                         |
 | ------ | ------------------------------------------------------------------- |
 | `dsn`  | Required, the DSN specified by Sentry.io to properly log errors to. |
+
+You can find further options in the [Node.js Guide on Sentry.io](https://docs.sentry.io/platforms/node/)
 
 ## Author
 

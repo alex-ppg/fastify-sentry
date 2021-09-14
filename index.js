@@ -1,30 +1,30 @@
-"use strict";
+'use strict'
 
-const fastifyPlugin = require("fastify-plugin");
-const Sentry = require("@sentry/node");
+const fp = require('fastify-plugin')
+const Sentry = require('@sentry/node')
+const Tracing = require('@sentry/tracing') // eslint-disable-line no-unused-vars
 
-function sentryConnector(fastify, options, done) {
-  Sentry.init({
-    dsn: options.dsn,
-    environment: options.environment ? options.environment : "local"
-  });
+function sentryConnector(fastify, opts, next) {
+  Sentry.init(opts)
   fastify.setErrorHandler((err, req, reply) => {
-    Sentry.withScope(scope => {
-      scope.setUser({
-        ip_address: req.raw.ip
-      });
-      scope.setTag("path", req.raw.url);
+    Sentry.withScope((scope) => {
+      if (req && req.user && req.user.sub) {
+        scope.setUser({
+          id: req.user.sub,
+          ip_address: req.ip
+        })
+      } else {
+        scope.setUser({
+          ip_address: req.ip
+        })
+      }
+      scope.setTag('path', req.url)
       // will be tagged with my-tag="my value"
-      Sentry.captureException(err);
-      options.errorHandler
-        ? options.errorHandler(err, req, reply)
-        : reply.send({
-            error: 500,
-            message: "Internal Server Error"
-          });
-    });
-  });
-  done();
+      Sentry.captureException(err)
+      opts.errorHandler ? opts.errorHandler(err, req, reply) : reply.send(err)
+    })
+  })
+  next()
 }
 
-module.exports = fastifyPlugin(sentryConnector);
+module.exports = fp(sentryConnector, { name: 'fastify-sentry' })

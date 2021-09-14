@@ -1,18 +1,7 @@
 {
-  "name": "fastify-sentry",
-  "version": "1.4.0",
+  "name": "@zentered/fastify-sentry",
+  "version": "2.0.0",
   "description": "A plugin for attaching the Sentry SDK error handling to Fastify",
-  "main": "index.js",
-  "scripts": {
-    "test": "tap test.js"
-  },
-  "engines": {
-    "node": ">=8"
-  },
-  "repository": {
-    "type": "git",
-    "url": "git+https://github.com/alex-ppg/fastify-sentry.git"
-  },
   "keywords": [
     "fastify",
     "api",
@@ -20,18 +9,63 @@
     "error",
     "handling"
   ],
-  "author": "Alex Papageorgiou",
-  "license": "GPL-3.0-or-later",
+  "homepage": "https://github.com/zentered/fastify-sentry#readme",
   "bugs": {
-    "url": "https://github.com/alex-ppg/fastify-sentry/issues"
+    "url": "https://github.com/zentered/fastify-sentry/issues"
   },
-  "homepage": "https://github.com/alex-ppg/fastify-sentry#readme",
+  "repository": {
+    "type": "git",
+    "url": "git@github.com:zentered/fastify-sentry.git"
+  },
+  "license": "GPL-3.0-or-later",
+  "author": "Alex Papageorgiou",
+  "contributors": [
+    "Patrick Heneise (https://github.com/PatrickHeneise)"
+  ],
+  "main": "index.js",
+  "scripts": {
+    "test": "tap",
+    "lint": "eslint --ext .js --ignore-path .gitignore .",
+    "fix:lint": "eslint --fix --ext .js --ignore-path .gitignore .",
+    "fix:style": "prettier --ignore-path .gitignore --write .",
+    "prepare": "husky install"
+  },
+  "commitlint": {
+    "extends": [
+      "@commitlint/config-conventional"
+    ]
+  },
+  "lint-staged": {
+    "*.{js,json,md}": [
+      "prettier --write",
+      "eslint --cache --fix",
+      "npm run test:unit -- --findRelatedTests"
+    ]
+  },
   "dependencies": {
-    "@sentry/node": "^5.9.0",
-    "fastify-plugin": "^1.2.1"
+    "@sentry/node": "^6.12.0",
+    "@sentry/tracing": "^6.12.0",
+    "fastify-plugin": "^3.0.0"
   },
   "devDependencies": {
-    "fastify": "^1.13.1",
-    "tap": "^14.10.1"
+    "@commitlint/cli": "^13.1.0",
+    "@commitlint/config-conventional": "^13.1.0",
+    "eslint": "^7.32.0",
+    "eslint-plugin-markdown": "^2.2.1",
+    "eslint-plugin-node": "^11.1.0",
+    "eslint-plugin-prettier": "^4.0.0",
+    "fastify": "^3.21.0",
+    "fastify-jwt": "^3.0.1",
+    "husky": "^7.0.0",
+    "prettier": "^2.4.0",
+    "tap": "^15.0.9"
+  },
+  "engines": {
+    "node": ">=14"
+  },
+  "release": {
+    "branches": [
+      "main"
+    ]
   }
 }

@@ -1,0 +1,31 @@
+name: Test
+
+on:
+  push:
+    branches:
+      - '**'
+      - '!main'
+
+jobs:
+  test:
+    env:
+      CI: true
+      NODE_ENV: test
+
+    runs-on: ubuntu-latest
+    strategy:
+      matrix:
+        node_version:
+          - 14
+          - 16
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - uses: actions/setup-node@v2.4.0
+        with:
+          node-version: ${{ matrix.node_version }}
+          cache: 'npm'
+      - run: npm ci --ignore-scripts
+      - run: npm run lint
+      - run: npm test
