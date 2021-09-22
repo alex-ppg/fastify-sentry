@@ -38,7 +38,7 @@ function sentryConnector(fastify, opts, next) {
 
     request.sentryTransaction = Sentry.startTransaction(
       {
-        op: 'request',
+        op: 'http.server',
         name: `${request.method} ${request.url}`,
         ...traceparentData
       },
