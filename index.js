@@ -3,6 +3,7 @@
 const fp = require('fastify-plugin')
 const Sentry = require('@sentry/node')
 const Tracing = require('@sentry/tracing') // eslint-disable-line no-unused-vars
+const extractRequestData = require('./lib/extractRequestData.js')
 
 function sentryConnector(fastify, opts, next) {
   if (!opts || !opts.dsn) {
@@ -22,10 +23,27 @@ function sentryConnector(fastify, opts, next) {
 
   fastify.decorateRequest('sentryTransaction', null)
   fastify.addHook('onRequest', async (request) => {
-    request.sentryTransaction = Sentry.startTransaction({
-      op: 'request',
-      name: `${request.method} ${request.url}`
-    })
+    // If there is a trace header set, we extract the data from it (parentSpanId, traceId, and sampling decision)
+    let traceparentData
+    if (
+      request.headers &&
+      typeof request.headers['sentry-trace'] === 'string'
+    ) {
+      traceparentData = Tracing.extractTraceparentData(
+        request.headers['sentry-trace']
+      )
+    }
+
+    const extractedRequestData = extractRequestData(request)
+
+    request.sentryTransaction = Sentry.startTransaction(
+      {
+        op: 'request',
+        name: `${request.method} ${request.url}`,
+        ...traceparentData
+      },
+      { request: extractedRequestData }
+    )
     return
   })
 
