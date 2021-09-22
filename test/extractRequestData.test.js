@@ -29,11 +29,12 @@ tap.test('extractedRequestData should process fastify request', (test) => {
 })
 
 tap.test('extractedRequestData should process other keys', (test) => {
-  test.plan(1)
+  test.plan(2)
   const request = {
     testing: 'testing'
   }
 
-  const actual = fn(request, ['testing'])
+  const actual = fn(request, ['testing', 'testing2'])
   test.equal(actual.testing, 'testing')
+  test.equal(actual.testing2, undefined)
 })
