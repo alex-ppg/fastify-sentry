@@ -30,6 +30,7 @@ tap.test('sentryConnector with custom error handler', async (test) => {
 
   const response = await fastify.inject({
     method: 'POST',
+    headers: { 'sentry-trace': 'testing trace' },
     url: '/',
     payload: { error: 503, message: 'Internal Server Error' }
   })
