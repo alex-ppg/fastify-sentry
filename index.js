@@ -5,6 +5,17 @@ const Sentry = require('@sentry/node')
 const Tracing = require('@sentry/tracing') // eslint-disable-line no-unused-vars
 const extractRequestData = require('./lib/extractRequestData.js')
 
+/**
+ * @param {import('fastify').fastify} fastify
+ * @param {{
+ *  dsn: string,
+ *  tracing: boolean = false,
+ *  errorHandler?: (error: Error, request: import('fastify').FastifyRequest, reply: import('fastify').FastifyReply) => void,
+ *  errorFilter?: (error: Error, request: import('fastify').FastifyRequest) => boolean
+ * }} opts
+ * @param {function} next
+ * @returns {void}
+ */
 function sentryConnector(fastify, opts, next) {
   if (!opts || !opts.dsn) {
     return next(new Error('Sentry DSN is required.'))
@@ -59,24 +70,30 @@ function sentryConnector(fastify, opts, next) {
   })
 
   fastify.setErrorHandler((error, request, reply) => {
-    Sentry.withScope((scope) => {
-      if (request && request.user && request.user.sub) {
-        scope.setUser({
-          id: request.user.sub,
-          ip_address: request.ip
-        })
-      } else {
-        scope.setUser({
-          ip_address: request.ip
-        })
-      }
-      scope.setTag('path', request.url)
-      // will be tagged with my-tag="my value"
-      Sentry.captureException(error)
-      opts.errorHandler
-        ? opts.errorHandler(error, request, reply)
-        : reply.send(error)
-    })
+    if (opts.errorFilter && ! opts.errorFilter(error, request)) {
+      process.env.NODE_ENV !== 'production' && console.warn('Error not reported to Sentry', error)
+    } else {
+      Sentry.withScope((scope) => {
+        if (request && request.user && request.user.sub) {
+          scope.setUser({
+            id: request.user.sub,
+            ip_address: request.ip
+          })
+        } else {
+          scope.setUser({
+            ip_address: request.ip
+          })
+        }
+        scope.setTag('path', request.url)
+        // will be tagged with my-tag="my value"
+        Sentry.captureException(error)
+      })
+    }
+
+    opts.errorHandler
+      ? opts.errorHandler(error, request, reply)
+      : reply.send(error)
+
     return
   })
 

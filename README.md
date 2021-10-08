@@ -30,7 +30,8 @@ app.register(fastifySentry, {
   dsn: process.env.SENTRY_DSN,
   environment: 'development',
   tracing: true,
-  tracesSampleRate: 1.0
+  tracesSampleRate: 1.0,
+  errorHandler
 })
 
 fastify.get('/', async (request, reply) => {
@@ -45,10 +46,12 @@ This plugin adds the Sentry SDK error handler by using `setErrorHandler`. It als
 
 ## Options
 
-| Option    | Description                                                         |
-| --------- | ------------------------------------------------------------------- |
-| `dsn`     | Required, the DSN specified by Sentry.io to properly log errors to. |
-| `tracing` | Default `false`, enable Sentry tracing.                             |
+| Option         | Description                                                         |
+| -------------- | ------------------------------------------------------------------- |
+| `dsn`          | Required, the DSN specified by Sentry.io to properly log errors to. |
+| `tracing`      | Default `false`, enable Sentry tracing.                             |
+| `errorHandler` | Custom error handler for errors (optional).                         |
+| `errorFilter`  | Error filter to selectively disable Sentry reporting (optional).    |
 
 You can find further options in the [Node.js Guide on Sentry.io](https://docs.sentry.io/platforms/node/)
 
