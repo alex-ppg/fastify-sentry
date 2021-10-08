@@ -3,7 +3,7 @@
 /* eslint-disable node/no-unpublished-require */
 const Fastify = require('fastify')
 const tap = require('tap')
-const fastifySentry = require('../index.js')
+const fastifySentry = require('../index')
 
 const fastify = Fastify()
 fastify.register(require('fastify-jwt'), { secret: 'supersecret' })

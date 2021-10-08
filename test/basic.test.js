@@ -5,7 +5,7 @@ const Fastify = require('fastify')
 const tap = require('tap')
 const sinon = require('sinon')
 const Sentry = require('@sentry/node')
-const fastifySentry = require('../index.js')
+const fastifySentry = require('../index')
 
 const fastify = Fastify()
 fastify.register(fastifySentry, {

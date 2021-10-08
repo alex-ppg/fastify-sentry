@@ -3,7 +3,7 @@
 /* eslint-disable node/no-unpublished-require */
 const Fastify = require('fastify')
 const tap = require('tap')
-const fastifySentry = require('../index.js')
+const fastifySentry = require('../index')
 
 tap.test('sentryConnector fails without DSN', async (test) => {
   try {
