@@ -46,12 +46,12 @@ This plugin adds the Sentry SDK error handler by using `setErrorHandler`. It als
 
 ## Options
 
-| Option         | Description                                                         |
-| -------------- | ------------------------------------------------------------------- |
-| `dsn`          | Required, the DSN specified by Sentry.io to properly log errors to. |
-| `tracing`      | Default `false`, enable Sentry tracing.                             |
-| `errorHandler` | Custom error handler for errors (optional).                         |
-| `errorFilter`  | Error filter to selectively disable Sentry reporting (optional).    |
+| Option         | Required | Description                                               |
+| -------------- | -------- | --------------------------------------------------------- |
+| `dsn`          | required | The DSN specified by Sentry.io to properly log errors to. |
+| `tracing`      | optional | Default `false`, enable Sentry tracing.                   |
+| `errorHandler` | optional | Custom error handler for errors.                          |
+| `errorFilter`  | optional | Error filter to selectively disable Sentry reporting.     |
 
 You can find further options in the [Node.js Guide on Sentry.io](https://docs.sentry.io/platforms/node/)
 
